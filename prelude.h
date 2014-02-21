@@ -129,6 +129,9 @@ float rstdin_f(void) {
   }
 }
 
+/* is_int_p :: char[] -> bool
+ Toma una cadena de caracteres `d` y verifica que puede ser transformada a un entero
+*/
 bool is_int_p (char * d){
   for (int i = 0; i <= (int) strlen(d) - 1; i++) {
     if (i == 0 && d[i] == '-') /* Unicamente '-' puede aparecer en la primera posicion */
