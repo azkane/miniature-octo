@@ -166,8 +166,13 @@ int rstdin_d(void) {
 }
 
 /* rstdin_g :: void -> GenericReturn
-   Lee stdin por uno de [int||float||char] lo regresa en un struct tipo GenericReturn
-   Acepta un puntero a un buffer de char[] que sera usado en vez de crear uno en el scope actual. Este buffer debe ser almenos de 256 elementos.
+
+   Lee stdin por uno de [int||float||char] lo regresa en un struct
+   tipo GenericReturn
+
+   Acepta un puntero a un buffer de char[] que sera usado en vez de
+   crear uno en el scope actual. Este buffer debe ser almenos de 256
+   elementos.
  */
 GenericReturn rstdin_g(char * s) {
   char d[256];
