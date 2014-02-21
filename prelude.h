@@ -8,6 +8,22 @@
 #include <stdbool.h>
 
 
+typedef enum {
+  INT_T = 0,
+  CHAR_T = 1,
+  FLOAT_T = 2,
+} RType;
+
+
+typedef struct {
+  RType type;
+  union {
+    int i_datum;
+    char c_datum;
+    float f_datum;
+  };
+} GenericReturn;
+
 /* swap :: int *, int * -> void
    Intercambia dos elementos enteros en memoria */
 void swap(int * a, int * b) {
