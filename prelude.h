@@ -9,9 +9,10 @@
 
 
 typedef enum {
-  INT_T = 0,
-  CHAR_T = 1,
-  FLOAT_T = 2,
+  INT_T,
+  CHAR_T,
+  FLOAT_T,
+  STR_T,
 } RType;
 
 typedef struct {
@@ -20,6 +21,7 @@ typedef struct {
     int i_datum;
     char c_datum;
     float f_datum;
+    char * s_datum;
   };
 } GenericReturn;
 
@@ -161,6 +163,39 @@ int rstdin_d(void) {
     printf ("%s no es un numero, intente de nuevo: ", d);
     return rstdin_d();
   }
+}
+
+/* rstdin_g :: void -> GenericReturn
+   Lee stdin por uno de [int||float||char] lo regresa en un struct tipo GenericReturn
+   Acepta un puntero a un buffer de char[] que sera usado en vez de crear uno en el scope actual. Este buffer debe ser almenos de 256 elementos.
+ */
+GenericReturn rstdin_g(char * s) {
+  char d[256];
+  GenericReturn ret;
+
+  rstdin_s(d, sizeof d);
+
+  if (is_int_p(d)) {
+    ret.type = INT_T;
+    ret.i_datum = strtol(d, NULL, 10);
+  }
+  else if (is_float_p) {
+    ret.type = FLOAT_T;
+    ret.f_datum = strtod(d, NULL);
+  }
+  else if (strlen(trim(d)) == 1) {
+    ret.type = CHAR_T;
+    ret.c_datum = (trim(d))[0];
+  }
+  else if (s != NULL) {
+    ret.type = STR_T;
+    ret.s_datum = strcpy(s, d);
+  }
+  else { // No se paso buffer desde el stackframe anterior
+    printf("Entrada incorrecta, intente de nuevo");
+    rstdin_g(s);
+  }
+  return ret;
 }
 
 /* with_slimit_read_d :: int -> int
