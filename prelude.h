@@ -94,8 +94,7 @@ char rstdin_c(void) {
 */
 bool is_float_p(char * str) {
   int p_quantity = 0;
-  for (int i = 0; i <= (int) strlen(str); i++) {
-    printf("%c", str[i]);
+  for (int i = 0; i <= (int) strlen(str) - 1; i++) {
     if (i == 0 && str[i] == '-') // '-' solo puede existir en la primera posicion
       continue;
     if (str[i] == '.' && p_quantity == 0) { // solo puede haber un punto
@@ -130,6 +129,17 @@ float rstdin_f(void) {
   }
 }
 
+bool is_int_p (char * d){
+  for (int i = 0; i <= (int) strlen(d) - 1; i++) {
+    if (i == 0 && d[i] == '-') /* Unicamente '-' puede aparecer en la primera posicion */
+      continue;
+    if (!(isdigit(d[i]))) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /* rstdin_d :: void -> int
    Lee stdin por un numero, verifica que es realmente un numero y lo regresa */
 int rstdin_d(void) {
@@ -137,22 +147,17 @@ int rstdin_d(void) {
   char d[256];
   int ret;
   rstdin_s(d, sizeof d);
-  for (int i = 0; i <= strlen(d) - 1; i++) {
-    if (i == 0 && d[i] == '-') /* Unicamente '-' puede aparecer en la primera posicion */
-      continue;
-    if (!(isdigit(d[i]))) {
-      printf ("%s no es un numero, intente de nuevo: ", d);
+  if (is_int_p(d)) {
+    ret = strtol(d, NULL, 10);
+    if (errno) {
+      printf ("error encontrado intente de nuevo.\n");
       return rstdin_d();
     }
-  }
-
-  ret = strtol(d, NULL, 10);
-  if (errno) {
-    printf ("error encontrado intente de nuevo.\n");
+    return ret;
+  } else {
+    printf ("%s no es un numero, intente de nuevo: ", d);
     return rstdin_d();
   }
-
-  return ret;
 }
 
 /* with_slimit_read_d :: int -> int
