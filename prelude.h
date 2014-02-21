@@ -425,6 +425,13 @@ bool eq(int a, int b) {
   return a == b ? true : false;
 }
 
+/* eq_f :: float, float -> bool
+ Verifica si dos flotantes son aproximadamente iguales
+*/
+bool eq_f(float a, float b) {
+  float epsilon = 0.00001;
+  return ((a - epsilon) < b) && ((a + epsilon) > b) ? true : false;
+}
 
 /* Simplicity is the ultimate sophistication - LDV */
 #endif
