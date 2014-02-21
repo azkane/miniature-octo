@@ -14,7 +14,6 @@ typedef enum {
   FLOAT_T = 2,
 } RType;
 
-
 typedef struct {
   RType type;
   union {
@@ -90,34 +89,45 @@ char rstdin_c(void) {
   return c[0];
 }
 
+/* is_float_p :: char[] -> bool
+   Verifica que una cadena de caracteres `str` puede ser un numero flotante
+*/
+bool is_float_p(char * str) {
+  int p_quantity = 0;
+  for (int i = 0; i <= (int) strlen(str); i++) {
+    printf("%c", str[i]);
+    if (i == 0 && str[i] == '-') // '-' solo puede existir en la primera posicion
+      continue;
+    if (str[i] == '.' && p_quantity == 0) { // solo puede haber un punto
+      p_quantity++;
+      continue;
+    }
+    if (!(isdigit(str[i]))) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /* rstdin_f :: void -> int
    Lee stdin por un numero flotante, verifica que es realmente un numero y lo regresa */
 float rstdin_f(void) {
   /* Mismo problema con la terminacion de lineas, misma solucion */
   char d[256];
   float ret;
-  int p_quantity = 0;
+
   rstdin_s(d, sizeof d);
-  for (int i = 0; i <= strlen(d) - 1; i++) {
-    if (i == 0 && d[i] == '-') /* Unicamente '-' puede aparecer en la primera posicion */
-      continue;
-    if (d[i] == '.' && p_quantity == 0) { /* Unicamente puede existir un punto */
-      p_quantity++;
-      continue;
-    }
-    if (!(isdigit(d[i]))) {
-      printf ("%s no es un numero, intente de nuevo: ", d);
+  if (is_float_p(d)) {
+    ret = strtod(d, NULL);
+    if (errno) {
+      printf ("error encontrado intente de nuevo.\n");
       return rstdin_f();
     }
-  }
-
-  ret = strtod(d, NULL);
-  if (errno) {
-    printf ("error encontrado intente de nuevo.\n");
+    return ret;
+  } else {
+    printf ("%s no es un numero, intente de nuevo: ", d);
     return rstdin_f();
   }
-
-  return ret;
 }
 
 /* rstdin_d :: void -> int
@@ -362,7 +372,7 @@ void clrscr(void) {
 }
 
 /* eq :: int, int -> bool
-Verifica si dos enteros son iguales */
+   Verifica si dos enteros son iguales */
 bool eq(int a, int b) {
   return a == b ? true : false;
 }
