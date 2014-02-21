@@ -184,7 +184,7 @@ GenericReturn rstdin_g(char * s) {
     ret.type = INT_T;
     ret.i_datum = strtol(d, NULL, 10);
   }
-  else if (is_float_p) {
+  else if (is_float_p(d)) {
     ret.type = FLOAT_T;
     ret.f_datum = strtod(d, NULL);
   }
@@ -429,7 +429,7 @@ bool eq(int a, int b) {
  Verifica si dos flotantes son aproximadamente iguales
 */
 bool eq_f(float a, float b) {
-  float epsilon = 0.00001;
+  float epsilon = 0.001;
   return ((a - epsilon) < b) && ((a + epsilon) > b) ? true : false;
 }
 
