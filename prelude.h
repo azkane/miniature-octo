@@ -410,7 +410,7 @@ bool d_in_range_p(int n, int il, int sl) {
 */
 void clrscr(void) {
 #ifdef _WIN32
-  system("PAUSE");
+  system("cls");
 #elif __unix
   system("clear");
 #else
