@@ -419,6 +419,20 @@ void clrscr(void) {
 #endif
 }
 
+/* suspend :: *str -> void
+   Muestra una cadena de caracteres `str` y pausa la ejecucion del programa.
+ */
+void suspend(char * str) {
+  printf("%s\n", str);
+#ifdef _WIN32
+  system("pause");
+#elif __unix
+  system("read -n1 -r");
+#else
+  getchar();
+#endif
+}
+
 /* eq :: int, int -> bool
    Verifica si dos enteros son iguales */
 bool eq(int a, int b) {
@@ -432,6 +446,7 @@ bool eq_f(float a, float b) {
   float epsilon = 0.001;
   return ((a - epsilon) < b) && ((a + epsilon) > b) ? true : false;
 }
+
 
 /* Simplicity is the ultimate sophistication - LDV */
 #endif
