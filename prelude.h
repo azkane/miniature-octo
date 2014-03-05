@@ -25,6 +25,16 @@ typedef struct {
   };
 } GenericReturn;
 
+
+typedef struct {
+  bool (*g_s) (GenericReturn);
+  bool (*i_p) (int);
+  bool (*f_p) (float);
+  bool (*c_p) (char);
+  bool (*s_p) (char *);
+} PredicateDispatch;
+
+
 /* swap :: int *, int * -> void
    Intercambia dos elementos enteros en memoria */
 void swap(int * a, int * b) {
@@ -199,6 +209,46 @@ GenericReturn rstdin_g(char * s) {
   else { // No se paso buffer desde el stackframe anterior
     printf("Entrada incorrecta, intente de nuevo");
     rstdin_g(s);
+  }
+  return ret;
+}
+
+/* with_validator_rstdin_g :: char *, (PredicateDispatch) -> GenericReturn
+   Lee desde stdin usando `rstdin_g`, dependiendo el tipo leido aplica la
+   funcion de validacion correspondiente de un struct de tipo `PredicateDispatch`
+   Si la entrada falla la validacion se pide al usuario que introduzca de
+   nuevo los datos.
+ */
+GenericReturn with_validator_rstdin_g(char * s, PredicateDispatch p) {
+  GenericReturn ret = rstdin_g(s);
+  if (p.g_s != NULL) {            /* Do a validation in the ret object */
+    while(!(p.g_s(ret))) {
+      ret = with_validator_rstdin_g(s, p);
+    }
+  }
+  if (p.i_p != NULL && ret.type == INT_T) {
+    while (!(p.i_p(ret.i_datum))) {
+      ret = with_validator_rstdin_g(s, p);
+      if (ret.type != INT_T) break;
+    }
+  }
+  if (p.f_p != NULL && ret.type == FLOAT_T) {
+    while (!(p.f_p(ret.f_datum))) {
+      ret = with_validator_rstdin_g(s, p);
+      if (ret.type != FLOAT_T) break;
+    }
+  }
+  if (p.c_p != NULL && ret.type == CHAR_T) {
+    while (!(p.c_p(ret.c_datum))) {
+      ret = with_validator_rstdin_g(s, p);
+      if (ret.type != CHAR_T) break;
+    }
+  }
+  if (p.s_p != NULL && ret.type == STR_T) {
+    while (!(p.s_p(ret.s_datum))) {
+      ret = with_validator_rstdin_g(s, p);
+      if (ret.type != STR_T) break;
+    }
   }
   return ret;
 }
