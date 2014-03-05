@@ -27,7 +27,7 @@ typedef struct {
 
 
 typedef struct {
-  bool (*g_s) (GenericReturn);
+  bool (*g_p) (GenericReturn);
   bool (*i_p) (int);
   bool (*f_p) (float);
   bool (*c_p) (char);
@@ -221,8 +221,8 @@ GenericReturn rstdin_g(char * s) {
  */
 GenericReturn with_validator_rstdin_g(char * s, PredicateDispatch p) {
   GenericReturn ret = rstdin_g(s);
-  if (p.g_s != NULL) {            /* Do a validation in the ret object */
-    while(!(p.g_s(ret))) {
+  if (p.g_p != NULL) {            /* Do a validation in the ret object */
+    while(!(p.g_p(ret))) {
       ret = with_validator_rstdin_g(s, p);
     }
   }
