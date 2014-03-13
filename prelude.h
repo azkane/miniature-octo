@@ -9,11 +9,11 @@
 
 
 typedef enum {
-  INT_T,
-  CHAR_T,
-  FLOAT_T,
-  STR_T,
-} RType;
+              INT_T,
+              CHAR_T,
+              FLOAT_T,
+              STR_T,
+            } RType;
 
 typedef struct {
   RType type;
@@ -37,6 +37,7 @@ typedef struct {
 
 /* swap :: int *, int * -> void
    Intercambia dos elementos enteros en memoria */
+
 void swap(int * a, int * b) {
   int t = *a;
   *a = *b;
@@ -142,7 +143,7 @@ float rstdin_f(void) {
 }
 
 /* is_int_p :: char[] -> bool
- Toma una cadena de caracteres `d` y verifica que puede ser transformada a un entero
+   Toma una cadena de caracteres `d` y verifica que puede ser transformada a un entero
 */
 bool is_int_p (char * d){
   for (int i = 0; i <= (int) strlen(d) - 1; i++) {
@@ -183,7 +184,7 @@ int rstdin_d(void) {
    Acepta un puntero a un buffer de char[] que sera usado en vez de
    crear uno en el scope actual. Este buffer debe ser almenos de 256
    elementos.
- */
+*/
 GenericReturn rstdin_g(char * s) {
   char d[256];
   GenericReturn ret;
@@ -218,7 +219,7 @@ GenericReturn rstdin_g(char * s) {
    funcion de validacion correspondiente de un struct de tipo `PredicateDispatch`
    Si la entrada falla la validacion se pide al usuario que introduzca de
    nuevo los datos.
- */
+*/
 GenericReturn with_validator_rstdin_g(char * s, PredicateDispatch p) {
   GenericReturn ret = rstdin_g(s);
   if (p.g_p != NULL) {            /* Do a validation in the ret object */
@@ -471,7 +472,7 @@ void clrscr(void) {
 
 /* suspend :: *str -> void
    Muestra una cadena de caracteres `str` y pausa la ejecucion del programa.
- */
+*/
 void suspend(char * str) {
   printf("%s\n", str);
 #ifdef _WIN32
@@ -490,11 +491,54 @@ bool eq(int a, int b) {
 }
 
 /* eq_f :: float, float -> bool
- Verifica si dos flotantes son aproximadamente iguales
+   Verifica si dos flotantes son aproximadamente iguales
 */
 bool eq_f(float a, float b) {
   float epsilon = 0.001;
   return ((a - epsilon) < b) && ((a + epsilon) > b) ? true : false;
+}
+
+/* prompt :: String, RType, void*, size -> void
+   Muestra un mensaje `str`, y lee stdin por el tipo indicado en
+   `type`, guarda el dato en `storage`
+ */
+void prompt(char * str, RType type, void * storage, int storage_size) {
+  printf("%s: ", str);
+  switch (type) {
+  case INT_T:
+    *((int*) storage) = rstdin_d();
+    break;
+  case CHAR_T:
+    *((char*) storage) = rstdin_c();
+    break;
+  case FLOAT_T:
+    *((float*) storage) = rstdin_f();
+    break;
+  case STR_T:
+    rstdin_s(storage, storage_size);
+    break;
+  }
+}
+
+/* abort_if_null :: void *, String -> void
+   Toma un puntero y un string, si el puntero apunta a NULL
+   termina la ejecucion del programa */
+void abort_if_null(void * ptr, const char str[]) {
+  if (ptr == NULL) {
+    printf("%s", str);
+    abort();
+  }
+}
+
+/* obtain_file_handle :: String, String -> FILE *
+   Abre un archivo y regresa un puntero a este, verificando que el
+   puntero no sea NULL
+*/
+FILE * obtain_file_handle(char * filename, char * attr) {
+  FILE * fp;
+  fp = fopen(filename, attr);
+  abort_if_null(fp, "Imposible abrir el archivo para escribir.\n");
+  return fp;
 }
 
 
